@@ -12,6 +12,37 @@ JSON工具类，封装了jackson
 </dependency>
 ```
 
+# 如果在springboot项目中使用，这样配置
+```java
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.multipart.MultipartFile;
+import sunyu.util.JacksonUtil;
+
+import java.time.ZoneId;
+
+/**
+ * Jackson配置
+ *
+ * @author SunYu
+ */
+@Configuration
+public class JacksonConfig {
+
+    @Bean
+    public JacksonUtil jacksonUtil() {
+        return JacksonUtil.builder().addMixIn(MultipartFile.class).setTimeZone(ZoneId.of("UTC")).build();
+    }
+
+    @Bean
+    public ObjectMapper objectMapper() {
+        return jacksonUtil().getObjectMapper();
+    }
+
+}
+```
+
 # 测试类
 ```java
 @Test
