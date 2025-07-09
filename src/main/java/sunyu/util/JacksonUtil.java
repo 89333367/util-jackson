@@ -38,25 +38,31 @@ public class JacksonUtil implements AutoCloseable {
 
     private JacksonUtil(Config config) {
         log.info("[构建JsonUtil] 开始");
-        // 基础配置
-        // 禁用日期时间戳序列化
-        config.objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-        // 设置忽略null值字段
-        config.objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
 
-        // 配置 Jackson 忽略未知字段
+        // 序列化：将 Java 对象转换为 JSON 字符串的过程
+        // 反序列化：将 JSON 字符串转换为 Java 对象的过程
+
+        // ========== 序列化配置 ==========
+        // 禁用日期时间序列化为时间戳格式（如 1620000000）
+        config.objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+        // 忽略 null 值字段，不参与序列化输出
+        config.objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+        // 当对象无任何可序列化属性时，返回空对象 {} 而非抛出异常
+        config.objectMapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
+
+        // ========== 反序列化配置 ==========
+        // 忽略 JSON 中存在但 Java 类中无对应字段的属性，避免抛出异常
         config.objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
-        // 日期时间格式配置
-        // 配置java.util.Date格式
+        // ========== 时间格式与序列化器配置 ==========
+        // 设置默认日期格式（java.util.Date 使用）
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         dateFormat.setTimeZone(TimeZone.getTimeZone(config.zoneId));
         config.objectMapper.setDateFormat(dateFormat);
 
-        // 创建自定义模块并注册序列化器和反序列化器
+        // 创建自定义模块以注册 Java 8 时间类型序列化/反序列化器
         SimpleModule customModule = new SimpleModule();
-
-        // Java 8时间类型序列化器
+        // 注册 Java 8 时间类型的序列化器
         customModule.addSerializer(LocalDateTime.class, new LocalDateTimeSerializer(
                 DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").withZone(config.zoneId)
         ));
@@ -64,20 +70,22 @@ public class JacksonUtil implements AutoCloseable {
                 DateTimeFormatter.ofPattern("yyyy-MM-dd").withZone(config.zoneId)
         ));
 
-        // Long类型序列化为字符串
+        // 将 Long 类型序列化为字符串，防止前端精度丢失问题
         customModule.addSerializer(Long.class, ToStringSerializer.instance);
 
-        // 自定义日期时间反序列化器
+        // 注册 Java 8 时间类型的反序列化器
         customModule.addDeserializer(LocalDateTime.class, new CustomLocalDateTimeDeserializer());
         customModule.addDeserializer(LocalDate.class, new CustomLocalDateDeserializer());
 
-        // 注册自定义模块
+        // 注册自定义模块到 ObjectMapper
         config.objectMapper.registerModule(customModule);
 
-        // 添加忽略类型
+        // ========== 混入配置（MixIn）==========
+        // 添加忽略类型：使用 MixIn 接口忽略特定类的序列化/反序列化行为
         for (Class<?> mixin : config.mixins) {
             config.objectMapper.addMixIn(mixin, JsonIgnoreTypeInterface.class);
         }
+
         log.info("[构建JsonUtil] 结束");
         this.config = config;
     }
