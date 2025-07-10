@@ -1,7 +1,5 @@
 package sunyu.util.test;
 
-import cn.hutool.core.date.DateUtil;
-import cn.hutool.core.date.LocalDateTimeUtil;
 import cn.hutool.log.Log;
 import cn.hutool.log.LogFactory;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -9,7 +7,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import org.junit.jupiter.api.Test;
 import sunyu.util.JacksonUtil;
 
-import java.time.ZoneId;
 import java.util.Map;
 
 public class TestUtil {
@@ -83,7 +80,7 @@ public class TestUtil {
 
     @Test
     void t002() {
-        JacksonUtil jacksonUtil = JacksonUtil.builder().setTimeZone(ZoneId.of("GMT+8")).build();//构建实例
+        JacksonUtil jacksonUtil = JacksonUtil.builder().setTimeZone("GMT+8").build();//构建实例
 
         /**
          * {
@@ -149,6 +146,8 @@ public class TestUtil {
 
     @Test
     void t003() {
+        JacksonUtil jacksonUtil = JacksonUtil.builder().setTimeZone("UTC").build();//构建实例
+        jacksonUtil.close();
     }
 
 

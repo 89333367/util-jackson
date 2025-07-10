@@ -10,6 +10,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
@@ -64,10 +66,10 @@ public class JacksonUtil implements AutoCloseable {
         SimpleModule customModule = new SimpleModule();
         // 注册 Java 8 时间类型的序列化器
         customModule.addSerializer(LocalDateTime.class, new LocalDateTimeSerializer(
-                DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").withZone(config.zoneId)
+                DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").withZone(ZoneId.of(config.zoneId))
         ));
         customModule.addSerializer(LocalDate.class, new LocalDateSerializer(
-                DateTimeFormatter.ofPattern("yyyy-MM-dd").withZone(config.zoneId)
+                DateTimeFormatter.ofPattern("yyyy-MM-dd").withZone(ZoneId.of(config.zoneId))
         ));
 
         // 将 Long 类型序列化为字符串，防止前端精度丢失问题
@@ -92,7 +94,7 @@ public class JacksonUtil implements AutoCloseable {
 
     private static class Config {
         private final ObjectMapper objectMapper = new ObjectMapper();
-        private ZoneId zoneId = ZoneId.of("UTC");//ZoneId.of("GMT+8")
+        private String zoneId = "UTC";
         private final Set<Class<?>> mixins = new HashSet<>();
     }
 
@@ -110,14 +112,13 @@ public class JacksonUtil implements AutoCloseable {
 
         /**
          * 设置时区
-         * ZoneId.of("GMT+8")
-         * ZoneId.of("UTC")
+         * 可选值 UTC 、 GMT+8
          *
-         * @param timeZone 时区
+         * @param zoneId 时区
          * @return Builder实例
          */
-        public Builder setTimeZone(ZoneId timeZone) {
-            config.zoneId = timeZone;
+        public Builder setTimeZone(String zoneId) {
+            config.zoneId = zoneId;
             return this;
         }
 
@@ -187,7 +188,7 @@ public class JacksonUtil implements AutoCloseable {
         try {
             return config.objectMapper.readValue(json, type);
         } catch (JsonProcessingException e) {
-            log.error("JSON 字符串转换为对象失败，JSON: {}, 目标类型: {}", json, type.getName(), e);
+            log.error("JSON 字符串转换为对象失败，JSON: {}, 目标类型: {} {}", json, type.getName(), e);
             return null;
         }
     }
@@ -204,7 +205,7 @@ public class JacksonUtil implements AutoCloseable {
         try {
             return config.objectMapper.readValue(json, ref);
         } catch (JsonProcessingException e) {
-            log.error("JSON 字符串转换为对象失败，JSON: {}, 目标类型: {}", json, ref.getType().getTypeName(), e);
+            log.error("JSON 字符串转换为对象失败，JSON: {}, 目标类型: {} {}", json, ref.getType().getTypeName(), e);
             return null;
         }
     }
@@ -219,7 +220,7 @@ public class JacksonUtil implements AutoCloseable {
         try {
             return config.objectMapper.writeValueAsString(obj);
         } catch (JsonProcessingException e) {
-            log.error("对象转换为 JSON 字符串失败，对象: {}", obj, e);
+            log.error("对象转换为 JSON 字符串失败，对象: {} {}", obj, e);
             return null;
         }
     }
@@ -234,9 +235,27 @@ public class JacksonUtil implements AutoCloseable {
         try {
             return config.objectMapper.readTree(json);
         } catch (JsonProcessingException e) {
-            log.error(e);
+            log.error("读取 JSON 树失败，JSON: {} {}", json, e);
             return null;
         }
+    }
+
+    /**
+     * 创建 JSON 对象
+     *
+     * @return JSON对象
+     */
+    public ObjectNode createObjectNode() {
+        return config.objectMapper.createObjectNode();
+    }
+
+    /**
+     * 创建 JSON 数组
+     *
+     * @return JSON数组
+     */
+    public ArrayNode createArrayNode() {
+        return config.objectMapper.createArrayNode();
     }
 
 }
