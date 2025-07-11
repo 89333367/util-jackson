@@ -258,4 +258,24 @@ public class JacksonUtil implements AutoCloseable {
         return config.objectMapper.createArrayNode();
     }
 
+
+    /**
+     * 判断字符串是否为有效的 JSON 对象或 JSON 数组
+     *
+     * @param json 待检测的字符串
+     * @return 如果是 JSON 对象或数组则返回 true，否则返回 false
+     */
+    public boolean isJsonOrArray(String json) {
+        if (json == null || json.trim().isEmpty()) {
+            return false;
+        }
+        try {
+            JsonNode jsonNode = readTree(json);
+            return jsonNode != null && (jsonNode.isObject() || jsonNode.isArray());
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+
 }
