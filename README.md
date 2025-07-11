@@ -28,6 +28,12 @@ JSON工具类，封装了jackson
     <artifactId>jackson-databind</artifactId>
     <version>2.19.1</version>
 </dependency>
+<!-- https://central.sonatype.com/artifact/com.fasterxml.jackson.datatype/jackson-datatype-jdk8/versions -->
+<dependency>
+    <groupId>com.fasterxml.jackson.datatype</groupId>
+    <artifactId>jackson-datatype-jdk8</artifactId>
+    <version>2.19.1</version>
+</dependency>
 <!-- https://central.sonatype.com/artifact/com.fasterxml.jackson.datatype/jackson-datatype-jsr310/versions -->
 <dependency>
     <groupId>com.fasterxml.jackson.datatype</groupId>
