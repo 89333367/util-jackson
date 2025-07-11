@@ -1,5 +1,6 @@
 package sunyu.util;
 
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.log.Log;
 import cn.hutool.log.LogFactory;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -232,6 +233,9 @@ public class JacksonUtil implements AutoCloseable {
      * @return JSON树
      */
     public JsonNode readTree(String json) {
+        if (StrUtil.isBlank(json)) {
+            return null;
+        }
         try {
             return config.objectMapper.readTree(json);
         } catch (JsonProcessingException e) {
