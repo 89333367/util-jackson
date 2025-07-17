@@ -17,6 +17,8 @@ import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 
+import java.io.File;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -222,6 +224,21 @@ public class JacksonUtil implements AutoCloseable {
             return config.objectMapper.writeValueAsString(obj);
         } catch (JsonProcessingException e) {
             log.error("对象转换为 JSON 字符串失败，对象: {} {}", obj, e);
+            return null;
+        }
+    }
+
+    /**
+     * 读取 JSON 树
+     *
+     * @param file 文件
+     * @return JSON树
+     */
+    public JsonNode readTree(File file) {
+        try {
+            return config.objectMapper.readTree(file);
+        } catch (IOException e) {
+            log.error("读取 JSON 树失败: {}", e);
             return null;
         }
     }
