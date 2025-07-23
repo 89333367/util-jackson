@@ -14,31 +14,31 @@ JSON工具类，封装了jackson
 <dependency>
     <groupId>com.fasterxml.jackson.core</groupId>
     <artifactId>jackson-core</artifactId>
-    <version>2.19.1</version>
+    <version>2.19.2</version>
 </dependency>
 <!-- https://central.sonatype.com/artifact/com.fasterxml.jackson.core/jackson-annotations/versions -->
 <dependency>
     <groupId>com.fasterxml.jackson.core</groupId>
     <artifactId>jackson-annotations</artifactId>
-    <version>2.19.1</version>
+    <version>2.19.2</version>
 </dependency>
 <!-- https://central.sonatype.com/artifact/com.fasterxml.jackson.core/jackson-databind/versions -->
 <dependency>
     <groupId>com.fasterxml.jackson.core</groupId>
     <artifactId>jackson-databind</artifactId>
-    <version>2.19.1</version>
+    <version>2.19.2</version>
 </dependency>
 <!-- https://central.sonatype.com/artifact/com.fasterxml.jackson.datatype/jackson-datatype-jdk8/versions -->
 <dependency>
     <groupId>com.fasterxml.jackson.datatype</groupId>
     <artifactId>jackson-datatype-jdk8</artifactId>
-    <version>2.19.1</version>
+    <version>2.19.2</version>
 </dependency>
 <!-- https://central.sonatype.com/artifact/com.fasterxml.jackson.datatype/jackson-datatype-jsr310/versions -->
 <dependency>
     <groupId>com.fasterxml.jackson.datatype</groupId>
     <artifactId>jackson-datatype-jsr310</artifactId>
-    <version>2.19.1</version>
+    <version>2.19.2</version>
 </dependency>
 ```
 
