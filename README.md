@@ -10,45 +10,17 @@ JSON工具类，封装了jackson
     <!-- {util.version}_{jdk.version}_{architecture.version} -->
     <version>1.0_jdk8_x64</version>
 </dependency>
-<!-- https://central.sonatype.com/artifact/com.fasterxml.jackson.core/jackson-core/versions -->
-<dependency>
-    <groupId>com.fasterxml.jackson.core</groupId>
-    <artifactId>jackson-core</artifactId>
-    <version>2.19.2</version>
-</dependency>
-<!-- https://central.sonatype.com/artifact/com.fasterxml.jackson.core/jackson-annotations/versions -->
-<dependency>
-    <groupId>com.fasterxml.jackson.core</groupId>
-    <artifactId>jackson-annotations</artifactId>
-    <version>2.19.2</version>
-</dependency>
-<!-- https://central.sonatype.com/artifact/com.fasterxml.jackson.core/jackson-databind/versions -->
-<dependency>
-    <groupId>com.fasterxml.jackson.core</groupId>
-    <artifactId>jackson-databind</artifactId>
-    <version>2.19.2</version>
-</dependency>
-<!-- https://central.sonatype.com/artifact/com.fasterxml.jackson.datatype/jackson-datatype-jdk8/versions -->
-<dependency>
-    <groupId>com.fasterxml.jackson.datatype</groupId>
-    <artifactId>jackson-datatype-jdk8</artifactId>
-    <version>2.19.2</version>
-</dependency>
-<!-- https://central.sonatype.com/artifact/com.fasterxml.jackson.datatype/jackson-datatype-jsr310/versions -->
-<dependency>
-    <groupId>com.fasterxml.jackson.datatype</groupId>
-    <artifactId>jackson-datatype-jsr310</artifactId>
-    <version>2.19.2</version>
-</dependency>
 ```
 
 # 如果在springboot项目中使用，这样配置
+
 ```java
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.multipart.MultipartFile;
-import sunyu.util.JacksonUtil;
+import sunyu.util.JsonUtil;
+import sunyu.util.JsonUtil;
 
 import java.time.ZoneId;
 
@@ -61,13 +33,13 @@ import java.time.ZoneId;
 public class JacksonConfig {
 
     @Bean
-    public JacksonUtil jacksonUtil() {
-        return JacksonUtil.builder().addMixIn(MultipartFile.class).setTimeZone(ZoneId.of("UTC")).build();
+    public JsonUtil jsonUtil() {
+        return JsonUtil.builder().addMixIn(MultipartFile.class).setTimeZone(ZoneId.of("UTC")).build();
     }
 
     @Bean
     public ObjectMapper objectMapper() {
-        return jacksonUtil().getObjectMapper();
+        return jsonUtil().getObjectMapper();
     }
 
 }
@@ -77,7 +49,7 @@ public class JacksonConfig {
 ```java
 @Test
 void t001() {
-    JacksonUtil jacksonUtil = JacksonUtil.builder().build();//构建实例
+    JacksonUtil jsonUtil = JacksonUtil.builder().build();//构建实例
 
     /**
      * {
@@ -99,7 +71,7 @@ void t001() {
             "    ]\n" +
             "  }\n" +
             "}";
-    JsonNode rootNode = jacksonUtil.readTree(json);
+    JsonNode rootNode = jsonUtil.readTree(json);
 
     // 1. 先获取数组长度（需通过绝对路径）
     JsonNode booksNode = rootNode.at("/library/books");
@@ -128,22 +100,22 @@ void t001() {
         }
     }
 
-    Map o = jacksonUtil.jsonToObj(json, Map.class);
+    Map o = jsonUtil.jsonToObj(json, Map.class);
     log.info("{}", o);
 
-    Map o2 = jacksonUtil.jsonToObj(json, new TypeReference<Map>() {
+    Map o2 = jsonUtil.jsonToObj(json, new TypeReference<Map>() {
     });
     log.info("{}", o2);
 
-    String jsonStr = jacksonUtil.objToJson(o);
+    String jsonStr = jsonUtil.objToJson(o);
     log.info("{}", jsonStr);
 
-    jacksonUtil.close();//回收资源
+    jsonUtil.close();//回收资源
 }
 
 @Test
 void t002() {
-    JacksonUtil jacksonUtil = JacksonUtil.builder().setTimeZone(ZoneId.of("GMT+8")).build();//构建实例
+    JacksonUtil jsonUtil = JacksonUtil.builder().setTimeZone(ZoneId.of("GMT+8")).build();//构建实例
 
     /**
      * {
@@ -201,9 +173,31 @@ void t002() {
             "    \"execution\": null,\n" +
             "    \"trace\": null\n" +
             "}";
-    Map m = jacksonUtil.jsonToObj(json, Map.class);
+    Map m = jsonUtil.jsonToObj(json, Map.class);
     log.info("{}", m.get("end"));
 
-    jacksonUtil.close();//回收资源
+    jsonUtil.close();//回收资源
+}
+
+@Test
+void t003() {
+    JsonUtil jsonUtil = JsonUtil.builder().setTimeZone("UTC").build();//构建实例
+    jsonUtil.close();
+}
+
+@Test
+void t004() {
+    String json = "{\n" +
+            "  \"username\": \"yxadmin\",\n" +
+            "  \"password\": \"yxzg-12345678\"\n" +
+            "}";
+    JsonUtil jsonUtil = JsonUtil.builder().build();
+    JsonNode root = jsonUtil.readTree(json);
+    log.info("{}", root);
+    JsonNode username = root.at("/username");
+    log.info("{}", username);
+    jsonUtil.setValueByJsonPtrExpr(root, "/username", "sunyu");
+    log.info("{}", root);
+    jsonUtil.close();
 }
 ```

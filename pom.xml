@@ -111,6 +111,26 @@
                                         <exclude>log4j2.xml</exclude>
                                     </excludes>
                                 </filter>
+
+                                <!-- 强制包含 Jackson 和 Hutool -->
+                                <filter>
+                                    <artifact>com.fasterxml.jackson.*:*</artifact>
+                                    <includes>
+                                        <include>**</include>
+                                    </includes>
+                                    <excludes>
+                                        <exclude>META-INF/maven/**</exclude>
+                                    </excludes>
+                                </filter>
+                                <filter>
+                                    <artifact>cn.hutool:*</artifact>
+                                    <includes>
+                                        <include>**</include>
+                                    </includes>
+                                    <excludes>
+                                        <exclude>META-INF/maven/**</exclude>
+                                    </excludes>
+                                </filter>
                             </filters>
                         </configuration>
                         <phase>package</phase>

@@ -5,7 +5,7 @@ import cn.hutool.log.LogFactory;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import org.junit.jupiter.api.Test;
-import sunyu.util.JacksonUtil;
+import sunyu.util.JsonUtil;
 
 import java.util.Map;
 
@@ -14,7 +14,7 @@ public class TestUtil {
 
     @Test
     void t001() {
-        JacksonUtil jacksonUtil = JacksonUtil.builder().build();//构建实例
+        JsonUtil jsonUtil = JsonUtil.builder().build();//构建实例
 
         /**
          * {
@@ -36,7 +36,7 @@ public class TestUtil {
                 "    ]\n" +
                 "  }\n" +
                 "}";
-        JsonNode rootNode = jacksonUtil.readTree(json);
+        JsonNode rootNode = jsonUtil.readTree(json);
 
         // 1. 先获取数组长度（需通过绝对路径）
         JsonNode booksNode = rootNode.at("/library/books");
@@ -65,22 +65,22 @@ public class TestUtil {
             }
         }
 
-        Map o = jacksonUtil.jsonToObj(json, Map.class);
+        Map o = jsonUtil.jsonToObj(json, Map.class);
         log.info("{}", o);
 
-        Map o2 = jacksonUtil.jsonToObj(json, new TypeReference<Map>() {
+        Map o2 = jsonUtil.jsonToObj(json, new TypeReference<Map>() {
         });
         log.info("{}", o2);
 
-        String jsonStr = jacksonUtil.objToJson(o);
+        String jsonStr = jsonUtil.objToJson(o);
         log.info("{}", jsonStr);
 
-        jacksonUtil.close();//回收资源
+        jsonUtil.close();//回收资源
     }
 
     @Test
     void t002() {
-        JacksonUtil jacksonUtil = JacksonUtil.builder().setTimeZone("GMT+8").build();//构建实例
+        JsonUtil jsonUtil = JsonUtil.builder().setTimeZone("GMT+8").build();//构建实例
 
         /**
          * {
@@ -138,16 +138,32 @@ public class TestUtil {
                 "    \"execution\": null,\n" +
                 "    \"trace\": null\n" +
                 "}";
-        Map m = jacksonUtil.jsonToObj(json, Map.class);
+        Map m = jsonUtil.jsonToObj(json, Map.class);
         log.info("{}", m.get("end"));
 
-        jacksonUtil.close();//回收资源
+        jsonUtil.close();//回收资源
     }
 
     @Test
     void t003() {
-        JacksonUtil jacksonUtil = JacksonUtil.builder().setTimeZone("UTC").build();//构建实例
-        jacksonUtil.close();
+        JsonUtil jsonUtil = JsonUtil.builder().setTimeZone("UTC").build();//构建实例
+        jsonUtil.close();
+    }
+
+    @Test
+    void t004() {
+        String json = "{\n" +
+                "  \"username\": \"yxadmin\",\n" +
+                "  \"password\": \"yxzg-12345678\"\n" +
+                "}";
+        JsonUtil jsonUtil = JsonUtil.builder().build();
+        JsonNode root = jsonUtil.readTree(json);
+        log.info("{}", root);
+        JsonNode username = root.at("/username");
+        log.info("{}", username);
+        jsonUtil.setValueByJsonPtrExpr(root, "/username", "sunyu");
+        log.info("{}", root);
+        jsonUtil.close();
     }
 
 
