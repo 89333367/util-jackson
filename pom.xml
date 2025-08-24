@@ -74,6 +74,12 @@
             <version>5.13.4</version>
             <scope>test</scope>
         </dependency>
+        <!-- https://central.sonatype.com/artifact/cglib/cglib/versions -->
+        <dependency>
+            <groupId>cglib</groupId>
+            <artifactId>cglib</artifactId>
+            <version>3.3.0</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -83,63 +89,48 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
                 <version>3.6.0</version>
-                <configuration>
-                    <!-- 打包时是否生成dependency-reduced-pom.xml -->
-                    <createDependencyReducedPom>false</createDependencyReducedPom>
-                    <!--只包含该项目代码中用到的jar,在父项目中引入了，但在当前模块中没有用到就会被删掉-->
-                    <minimizeJar>true</minimizeJar>
-                    <!-- 重命名包名解决冲突 -->
-                    <relocations>
-                        <!-- <relocation>
-                            <pattern>org.apache.kafka</pattern>
-                            <shadedPattern>relocation.org.apache.kafka</shadedPattern>
-                        </relocation> -->
-                    </relocations>
-                </configuration>
                 <executions>
                     <execution>
-                        <configuration>
-                            <filters>
-                                <filter>
-                                    <artifact>*:*</artifact>
-                                    <excludes>
-                                        <exclude>META-INF/**</exclude>
-                                        <exclude>assets/**</exclude>
-                                        <exclude>license/**</exclude>
-                                        <exclude>font_metrics.properties</exclude>
-                                        <exclude>Log4j-charsets.properties</exclude>
-                                        <exclude>log4j2.xml</exclude>
-                                    </excludes>
-                                </filter>
-
-                                <!-- 强制包含 Jackson 和 Hutool -->
-                                <!--<filter>
-                                    <artifact>com.fasterxml.jackson.*:*</artifact>
-                                    <includes>
-                                        <include>**</include>
-                                    </includes>
-                                    <excludes>
-                                        <exclude>META-INF/maven/**</exclude>
-                                    </excludes>
-                                </filter>
-                                <filter>
-                                    <artifact>cn.hutool:*</artifact>
-                                    <includes>
-                                        <include>**</include>
-                                    </includes>
-                                    <excludes>
-                                        <exclude>META-INF/maven/**</exclude>
-                                    </excludes>
-                                </filter>-->
-                            </filters>
-                        </configuration>
                         <phase>package</phase>
                         <goals>
                             <goal>shade</goal>
                         </goals>
+                        <configuration>
+                            <!-- 添加以下配置来禁用 dependency-reduced-pom.xml 文件生成 -->
+                            <createDependencyReducedPom>false</createDependencyReducedPom>
+                            <relocations>
+                                <!--<relocation>
+                                    <pattern>com.fasterxml.jackson</pattern>
+                                    <shadedPattern>shaded.com.fasterxml.jackson</shadedPattern>
+                                </relocation>-->
+                            </relocations>
+                            <shadedArtifactAttached>true</shadedArtifactAttached>
+                            <shadedClassifierName>shaded</shadedClassifierName>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>
+            <!-- https://central.sonatype.com/artifact/org.apache.maven.plugins/maven-assembly-plugin/versions -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>3.7.1</version>
+                <configuration>
+                    <descriptorRefs>
+                        <descriptorRef>jar-with-dependencies</descriptorRef>
+                    </descriptorRefs>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>make-assembly</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
 
             <!-- 源码也上传到私服 -->
             <!-- https://central.sonatype.com/artifact/org.apache.maven.plugins/maven-source-plugin/versions -->
