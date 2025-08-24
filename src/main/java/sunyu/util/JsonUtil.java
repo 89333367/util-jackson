@@ -513,20 +513,18 @@ public class JsonUtil implements AutoCloseable {
      * @param root        JSON 根节点（必须是可变节点）
      * @param jsonPtrExpr JSON Pointer 表达式，如 "/user/name" 或 "/users/0/name"
      * @param value       要设置的值
-     *
-     * @return 修改后的 JSON 节点（原节点）
      */
-    public JsonNode setValueByJsonPtrExpr(JsonNode root, String jsonPtrExpr, Object value) {
+    public void setValueByJsonPtrExpr(JsonNode root, String jsonPtrExpr, Object value) {
         // 参数校验：检查根节点是否为空、路径表达式是否为空，以及根节点是否为可变类型
         if (root == null || StrUtil.isBlank(jsonPtrExpr) || !(root instanceof ObjectNode || root instanceof ArrayNode)) {
-            return root;
+            return;
         }
 
         try {
             // 解析 JSON Pointer 路径表达式为路径段数组
             String[] parts = parseJsonPointerPath(jsonPtrExpr);
             if (parts.length == 0) {
-                return root;
+                return;
             }
 
             // 从根节点开始，逐级查找父节点
@@ -536,7 +534,7 @@ public class JsonUtil implements AutoCloseable {
                 String part = unescapeJsonPointerToken(parts[i]);
                 parentNode = getNodeChild(parentNode, part);
                 if (parentNode == null) {
-                    return root; // 路径不存在，直接返回原节点
+                    return; // 路径不存在，直接返回
                 }
             }
 
@@ -563,12 +561,10 @@ public class JsonUtil implements AutoCloseable {
                     }
                 }
             }
-
-            return root;
         } catch (Exception e) {
             log.error("设置JSON节点值失败，根节点: {}, 路径: {}, 值: {} {}", root, jsonPtrExpr, value, e);
-            return root;
         }
     }
+
 
 }
