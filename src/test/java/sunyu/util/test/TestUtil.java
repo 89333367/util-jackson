@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import org.junit.jupiter.api.Test;
 import sunyu.util.JsonUtil;
 
+import java.util.ArrayList;
 import java.util.Map;
 
 public class TestUtil {
@@ -163,6 +164,19 @@ public class TestUtil {
         log.info("{}", username);
         jsonUtil.setValueByJsonPtrExpr(root, "/username", "sunyu");
         log.info("{}", root);
+        boolean b = jsonUtil.setValueByJsonPtrExpr(root, "/newNode", 123);
+        log.info("{}", b);
+        log.info("{}", root);
+        jsonUtil.setValueByJsonPtrExpr(root, "/newNode2", new String[]{null, null, "索引为2"});
+        log.info("{}", root);
+        jsonUtil.setValueByJsonPtrExpr(root, "/newNode3", new ArrayList<String>() {{
+            add(null);
+            add(null);
+            add("索引为2");
+        }});
+        jsonUtil.setValueByJsonPtrExpr(root, "/username", null);
+        log.info("{}", root);
+        log.info("{}", jsonUtil.objToJson(root));
         jsonUtil.close();
     }
 
