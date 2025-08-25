@@ -67,6 +67,12 @@
             <artifactId>jackson-datatype-jsr310</artifactId>
             <version>2.19.2</version>
         </dependency>
+        <!-- https://central.sonatype.com/artifact/com.fasterxml.jackson.module/jackson-module-parameter-names/versions -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.module</groupId>
+            <artifactId>jackson-module-parameter-names</artifactId>
+            <version>2.19.2</version>
+        </dependency>
         <!-- https://central.sonatype.com/artifact/org.junit.jupiter/junit-jupiter/versions -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
