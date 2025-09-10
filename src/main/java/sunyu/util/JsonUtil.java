@@ -58,7 +58,7 @@ public class JsonUtil implements AutoCloseable {
         // 序列化配置：禁用日期时间序列化为时间戳格式
         config.objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
         // 序列化配置：忽略 null 值字段，不参与序列化输出
-        config.objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+        config.objectMapper.setDefaultPropertyInclusion(JsonInclude.Include.NON_NULL);
         // 序列化配置：当对象无任何可序列化属性时，返回空对象 {} 而非抛出异常
         config.objectMapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
 
