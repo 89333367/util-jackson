@@ -35,7 +35,7 @@ public class JacksonConfig {
 
     @Bean
     public JsonUtil jsonUtil() {
-        return JsonUtil.builder().addMixIn(MultipartFile.class).setTimeZone(ZoneId.of("UTC")).build();
+        return JsonUtil.builder().addMixIn(MultipartFile.class).setTimeZone("UTC").build();
     }
 
     @Bean
