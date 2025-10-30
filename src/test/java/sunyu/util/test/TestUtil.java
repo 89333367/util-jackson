@@ -1,14 +1,16 @@
 package sunyu.util.test;
 
-import cn.hutool.log.Log;
-import cn.hutool.log.LogFactory;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.JsonNode;
-import org.junit.jupiter.api.Test;
-import sunyu.util.JsonUtil;
-
 import java.util.ArrayList;
 import java.util.Map;
+
+import org.junit.jupiter.api.Test;
+
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
+
+import cn.hutool.log.Log;
+import cn.hutool.log.LogFactory;
+import sunyu.util.JsonUtil;
 
 public class TestUtil {
     private final Log log = LogFactory.get();
@@ -167,18 +169,19 @@ public class TestUtil {
         boolean b = jsonUtil.setValueByJsonPtrExpr(root, "/newNode", 123);
         log.info("{}", b);
         log.info("{}", root);
-        jsonUtil.setValueByJsonPtrExpr(root, "/newNode2", new String[]{null, null, "索引为2"});
+        jsonUtil.setValueByJsonPtrExpr(root, "/newNode2", new String[] { null, null, "索引为2" });
         log.info("{}", root);
-        jsonUtil.setValueByJsonPtrExpr(root, "/newNode3", new ArrayList<String>() {{
-            add(null);
-            add(null);
-            add("索引为2");
-        }});
+        jsonUtil.setValueByJsonPtrExpr(root, "/newNode3", new ArrayList<String>() {
+            {
+                add(null);
+                add(null);
+                add("索引为2");
+            }
+        });
         jsonUtil.setValueByJsonPtrExpr(root, "/username", null);
         log.info("{}", root);
         log.info("{}", jsonUtil.objToJson(root));
         jsonUtil.close();
     }
-
 
 }

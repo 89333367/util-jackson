@@ -1,8 +1,16 @@
 package sunyu.util;
 
-import cn.hutool.core.util.StrUtil;
-import cn.hutool.log.Log;
-import cn.hutool.log.LogFactory;
+import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.TimeZone;
+
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -18,16 +26,9 @@ import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 
-import java.io.File;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.TimeZone;
+import cn.hutool.core.util.StrUtil;
+import cn.hutool.log.Log;
+import cn.hutool.log.LogFactory;
 
 /**
  * JSON工具类
@@ -74,12 +75,10 @@ public class JsonUtil implements AutoCloseable {
         SimpleModule customModule = new SimpleModule();
         // 注册 LocalDateTime 序列化器
         customModule.addSerializer(LocalDateTime.class, new LocalDateTimeSerializer(
-                DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").withZone(ZoneId.of(config.zoneId))
-        ));
+                DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").withZone(ZoneId.of(config.zoneId))));
         // 注册 LocalDate 序列化器
         customModule.addSerializer(LocalDate.class, new LocalDateSerializer(
-                DateTimeFormatter.ofPattern("yyyy-MM-dd").withZone(ZoneId.of(config.zoneId))
-        ));
+                DateTimeFormatter.ofPattern("yyyy-MM-dd").withZone(ZoneId.of(config.zoneId))));
         // 注册 Long 类型序列化器，将 Long 类型序列化为字符串，防止前端精度丢失问题
         customModule.addSerializer(Long.class, ToStringSerializer.instance);
         // 注册 LocalDateTime 反序列化器
