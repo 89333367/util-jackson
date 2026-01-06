@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>sunyu.util</groupId>
     <artifactId>util-jackson</artifactId>
-    <!-- {util.version}_{jdk.version}_{architecture.version} -->
-    <version>1.0_jdk8_x64</version>
+    <!-- {jackson.version}_{util.version}_{jdk.version}_{architecture.version} -->
+    <version>2.20.1_1.0_jdk8_x64</version>
 
     <properties>
         <java.version>1.8</java.version>
@@ -35,7 +35,7 @@
         <dependency>
             <groupId>cn.hutool</groupId>
             <artifactId>hutool-all</artifactId>
-            <version>5.8.41</version>
+            <version>5.8.43</version>
         </dependency>
         <!-- https://central.sonatype.com/artifact/com.fasterxml.jackson.core/jackson-core/versions -->
         <!-- 核心模块，提供底层流式API（JsonParser/JsonGenerator）和基本注解支持，是所有Jackson模块的基础依赖。 -->
@@ -58,7 +58,7 @@
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
-            <version>2.20.0</version>
+            <version>2.20.1</version>
         </dependency>
         <!--
         https://central.sonatype.com/artifact/com.fasterxml.jackson.datatype/jackson-datatype-jdk8/versions -->
@@ -69,7 +69,7 @@
         <dependency>
             <groupId>com.fasterxml.jackson.datatype</groupId>
             <artifactId>jackson-datatype-jdk8</artifactId>
-            <version>2.20.0</version>
+            <version>2.20.1</version>
         </dependency>
         <!--
         https://central.sonatype.com/artifact/com.fasterxml.jackson.datatype/jackson-datatype-jsr310/versions -->
@@ -80,7 +80,7 @@
         <dependency>
             <groupId>com.fasterxml.jackson.datatype</groupId>
             <artifactId>jackson-datatype-jsr310</artifactId>
-            <version>2.20.0</version>
+            <version>2.20.1</version>
         </dependency>
         <!--
         https://central.sonatype.com/artifact/com.fasterxml.jackson.module/jackson-module-parameter-names/versions -->
@@ -88,7 +88,7 @@
         <dependency>
             <groupId>com.fasterxml.jackson.module</groupId>
             <artifactId>jackson-module-parameter-names</artifactId>
-            <version>2.20.0</version>
+            <version>2.20.1</version>
         </dependency>
 
 
@@ -96,7 +96,7 @@
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
-            <version>5.13.4</version>
+            <version>5.14.1</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -116,14 +116,38 @@
                             <goal>shade</goal>
                         </goals>
                         <configuration>
-                            <!-- 添加以下配置来禁用 dependency-reduced-pom.xml 文件生成 -->
+                            <!-- 禁用 dependency-reduced-pom.xml 文件生成 -->
                             <createDependencyReducedPom>false</createDependencyReducedPom>
                             <relocations>
-                                <!--<relocation>
-                                    <pattern>com.fasterxml.jackson</pattern>
-                                    <shadedPattern>shaded.com.fasterxml.jackson</shadedPattern>
-                                </relocation>-->
+                                <!-- 重命名Hutool包 -->
+                                <relocation>
+                                    <pattern>cn.hutool</pattern>
+                                    <shadedPattern>sunyu.util.relocations.jackson.cn.hutool</shadedPattern>
+                                </relocation>
+                                <!-- 重命名Apache包 -->
+                                <relocation>
+                                    <pattern>org.apache</pattern>
+                                    <shadedPattern>sunyu.util.relocations.jackson.org.apache</shadedPattern>
+                                </relocation>
+                                <!-- 重命名Jackson包 -->
+                                <relocation>
+                                    <pattern>com.fasterxml</pattern>
+                                    <shadedPattern>sunyu.util.relocations.jackson.com.fasterxml</shadedPattern>
+                                </relocation>
+                                <!-- 重命名Guava包 -->
+                                <relocation>
+                                    <pattern>com.google</pattern>
+                                    <shadedPattern>sunyu.util.relocations.jackson.com.google</shadedPattern>
+                                </relocation>
                             </relocations>
+                            <transformers>
+                                <!-- 合并META-INF/services文件 -->
+                                <transformer
+                                        implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
+                                <!-- 处理Apache许可证 -->
+                                <transformer
+                                        implementation="org.apache.maven.plugins.shade.resource.ApacheLicenseResourceTransformer"/>
+                            </transformers>
                             <shadedArtifactAttached>true</shadedArtifactAttached>
                             <shadedClassifierName>shaded</shadedClassifierName>
                             <filters>
@@ -134,7 +158,9 @@
                                         <exclude>META-INF/*.SF</exclude>
                                         <exclude>META-INF/*.DSA</exclude>
                                         <exclude>META-INF/*.RSA</exclude>
-                                        <!-- 可选：保留其他静态资源，必要时再按需排除 -->
+                                        <!-- 排除重复的NOTICE文件 -->
+                                        <exclude>META-INF/NOTICE*</exclude>
+                                        <exclude>META-INF/LICENSE*</exclude>
                                     </excludes>
                                 </filter>
                             </filters>
@@ -149,7 +175,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
-                <version>3.3.1</version>
+                <version>3.4.0</version>
                 <executions>
                     <execution>
                         <phase>compile</phase>

@@ -7,8 +7,8 @@ JSON工具类，封装了jackson
 <dependency>
     <groupId>sunyu.util</groupId>
     <artifactId>util-jackson</artifactId>
-    <!-- {util.version}_{jdk.version}_{architecture.version} -->
-    <version>1.0_jdk8_x64</version>
+    <!-- {jackson.version}_{util.version}_{jdk.version}_{architecture.version} -->
+    <version>2.20.1_1.0_jdk8_x64</version>
     <classifier>shaded</classifier>
 </dependency>
 ```
