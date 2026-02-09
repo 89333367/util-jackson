@@ -1,0 +1,71 @@
+{
+    "tooltip": {
+        "axisPointer": {
+            "type": "shadow"
+        },
+        "formatter": "function (params) {return params[0].name + '<br>' + params[0].seriesName + ': ' + params[0].value + ' 亩' + '<br>' + '占比' + ': ' + ((params[0].value/60)*100).toFixed(2) + '%';}}",
+        "grid": {
+            "bottom": "30px",
+            "containLabel": true,
+            "left": "3%",
+            "right": "4%",
+            "top": "100px"
+        },
+        "legend": {
+            "left": "30px",
+            "top": "30px"
+        },
+        "series": [
+            {
+                "barMaxWidth": 60,
+                "data": [
+                    10,
+                    20,
+                    30
+                ],
+                "emphasis": {
+                    "focus": "series"
+                },
+                "name": "亩数",
+                "type": "bar"
+            }
+        ],
+        "textStyle": {
+            "align": "left"
+        },
+        "toolbox": {
+            "feature": {
+                "dataView": {
+                    "readOnly": true,
+                    "show": true,
+                    "title": "数据视图"
+                },
+                "saveAsImage": {
+                    "show": true
+                }
+            },
+            "right": "18px",
+            "top": "30px"
+        },
+        "trigger": "axis",
+        "xAxis": [
+            {
+                "data": [
+                    "2023-04-01",
+                    "2023-04-02",
+                    "2023-04-03"
+                ]
+            }
+        ],
+        "yAxis": [
+            {
+                "axisLabel": {
+                    "formatter": "{value} 亩"
+                },
+                "minInterval": 1,
+                "name": "亩数",
+                "type": "value"
+            }
+        ]
+    }
+}
